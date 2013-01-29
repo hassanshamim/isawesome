@@ -1,13 +1,51 @@
 <html>
 <head>
-    <title>
-        <%= @name.capitalize + " is awesome! <3 <3 <3" %>
-    </title>
+  <title>
+    <%= @name.capitalize + " is awesome! <3 <3 <3" %>
+  </title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 </head>
 <body>
-<p>
-    <%= "#{@name} is awesome. " * 2500 %>
-</p>
-<p> You know it. </p>
+  <p id="top">
+    <%= "#{@name} is awesome. " * 1250 %>
+    <%= "#{@name} is awesome. " * 1250 %>
+  <p id="bottom"> You know it. </p>
+
+  <%# Next: modify scroll hook so it adds more text depending on how far %>
+  <%# from the center you are using relativePosition()  %>
+
+  <script>
+    String.prototype.repeat = function( num ) {
+        return new Array( num + 1 ).join( this );
+    };
+
+    var addToTop = function() {
+    $('#top').prepend( text.repeat(offset()) );
+    };
+
+    var addToBottom = function() {
+    $('#top').append( text.repeat(offset()) );
+    };
+
+    var text = (function(){
+      var text = $('#top').text().trim();
+      var length = text.indexOf('.') + 1;
+      return text.slice(0, length) + " ";
+    })();
+
+    var offset = function(){
+      return Math.abs(relativePosition() - 50);
+    };
+
+    var relativePosition = function() {
+      var height = $(window).height();
+      var position = $(window).scrollTop();
+      return Math.floor(position/height * 100 );
+    };
+    $(window).scroll(function() {
+      addToTop(text);
+      addToBottom(text);
+    });
+  </script>
 </body>
 </html>
