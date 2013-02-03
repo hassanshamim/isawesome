@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>
@@ -7,8 +8,8 @@
 </head>
 <body>
   <p id="top">
-    <%= "#{@name} is awesome. " * 1250 %>
-    <%= "#{@name} is awesome. " * 1250 %>
+    <%= "#{@name} is awesome. " * 2500 %>
+  </p>
   <p id="bottom"> You know it. </p>
 
   <%# Next: modify scroll hook so it adds more text depending on how far %>
@@ -20,11 +21,11 @@
     };
 
     var addToTop = function() {
-    $('#top').prepend( text.repeat(offset()) );
+    $('#top').prepend( text.repeat(distanceFromMiddle()) );
     };
 
     var addToBottom = function() {
-    $('#top').append( text.repeat(offset()) );
+    $('#top').append( text.repeat(distanceFromMiddle()) );
     };
 
     var text = (function(){
@@ -33,18 +34,34 @@
       return text.slice(0, length) + " ";
     })();
 
-    var offset = function(){
+    var distanceFromMiddle = function(){
       return Math.abs(relativePosition() - 50);
     };
 
+    function getDocHeight() {
+        var D = document;
+        return Math.max(
+            Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+            Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+            Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+        );
+    }
+
     var relativePosition = function() {
-      var height = $(window).height();
-      var position = $(window).scrollTop();
+      var height = getDocHeight();
+      var position = $(window).scrollTop() + $(window).height();
       return Math.floor(position/height * 100 );
     };
+
+
     $(window).scroll(function() {
-      addToTop(text);
-      addToBottom(text);
+      if(relativePosition() == 100) {
+        $(window).unbind('scroll');
+        $(window).scroll(function() {
+          addToTop(text);
+          addToBottom(text);
+        });
+      }
     });
   </script>
 </body>
