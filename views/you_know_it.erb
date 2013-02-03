@@ -6,38 +6,23 @@
   </title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 </head>
+
 <body>
   <p id="top">
     <%= "#{@name} is awesome. " * 2500 %>
   </p>
   <p id="bottom"> You know it. </p>
 
-  <%# Next: modify scroll hook so it adds more text depending on how far %>
-  <%# from the center you are using relativePosition()  %>
-
   <script>
-    String.prototype.repeat = function( num ) {
-        return new Array( num + 1 ).join( this );
-    };
 
-    var addToTop = function() {
-    $('#top').prepend( text.repeat(distanceFromMiddle()) );
-    };
-
-    var addToBottom = function() {
-    $('#top').append( text.repeat(distanceFromMiddle()) );
-    };
-
+    <%# Gets name is awesome because I don't know how to pass ruby to js %>
     var text = (function(){
       var text = $('#top').text().trim();
       var length = text.indexOf('.') + 1;
       return text.slice(0, length) + " ";
     })();
 
-    var distanceFromMiddle = function(){
-      return Math.abs(relativePosition() - 50);
-    };
-
+    <%# gets window height across all devices %>
     function getDocHeight() {
         var D = document;
         return Math.max(
@@ -47,13 +32,38 @@
         );
     }
 
+    <%# Allows string multiplication %>
+    String.prototype.repeat = function( num ) {
+        return new Array( num + 1 ).join( this );
+    };
+
+    <%# calculates position of window relative to size of the document %>
     var relativePosition = function() {
       var height = getDocHeight();
       var position = $(window).scrollTop() + $(window).height();
       return Math.floor(position/height * 100 );
     };
 
+    var distanceFromMiddle = function(){
+      return Math.abs(relativePosition() - 50);
+    };
 
+    <%#
+        functions to add add varying amount of text to top and bottom
+        depending on the distance from the middle (further away = more text)
+    %>
+    var addToTop = function() {
+    $('#top').prepend( text.repeat(distanceFromMiddle()) );
+    };
+
+    var addToBottom = function() {
+    $('#top').append( text.repeat(distanceFromMiddle()) );
+    };
+
+    <%#
+        waits until user hits the bottom of the page before
+        it starts adding text on scroll.
+    %>
     $(window).scroll(function() {
       if(relativePosition() == 100) {
         $(window).unbind('scroll');
